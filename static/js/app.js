@@ -99,7 +99,8 @@ function makePlots(selectedID) {
           text: otuLabels.slice(0,10).reverse(),
           name: "OTU",
           type: "bar",
-          orientation: "h"
+          orientation: "h",
+          marker: {color: "goldenrod"}
       }];
      
         
@@ -127,7 +128,7 @@ function makePlots(selectedID) {
          
         let layout2 = {
               showlegend: false,
-              height: 500,
+              height:800,
               width: 1000
         };
     
@@ -142,21 +143,21 @@ function makePlots(selectedID) {
           {
             domain: { x: [0, 1], y: [0, 1] },
             value: 5,
-            // delta: { reference: 9, increasing: { color: "green" } },
             title: { text: "Belly Button Washing Frequency" },
             type: "indicator",
-            mode: "gauge+delta",
+            mode: "gauge+number",
             gauge: {
-              axis: { range: [null, 9] },
+              bar: {'color': "darkgrey"},
+              axis: { range: [null, ] },
               steps: [
-                { range: [0,1], color: "cyan" },
-                { range: [1,2], color: "blue" },
-                { range: [2,3], color: "red" },
-                { range: [3,4], color: "royalblue" },
-                { range: [4,5], color: "red" },
-                { range: [6,7], color: "royalblue" },
-                { range: [7,8], color: "red" },
-                { range: [8,9], color: "royalblue" }]
+                { range: [0,1], color: "darkviolet" },
+                { range: [1,2], color: "darkviolet" },
+                { range: [2,3], color: "mediumorchid" },
+                { range: [3,4], color: "mediumorchid" },
+                { range: [4,5], color: "mediumvioletred"},
+                { range: [5,6], color: "mediumvioletred"},
+                { range: [6,7], color: "palevioletred"},
+                { range: [7,8], color: "palevioletred"}]
              }
             }
           ];
