@@ -3,20 +3,21 @@ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/
 
 
 
-//---------------------------filter so starting ID = the data row
+//import data
 function makeMetaData(selectedID){
   d3.json(url).then((data)=>{
 
-    // --------------------------- use metadata to populate demo data
+    // If ID in data matches the selected ID
     let demoData = data.metadata;
     for (let i = 0; i < demoData.length; i++) {
       let demo = demoData[i]
       if ( demo.id == selectedID ) {
 
+        //clear the last entry
         let panel = d3.select(".panel-body");
         panel.html("");
        
-
+        //append the new keys and values to the Demographic Info section 
         for (const [key, value] of Object.entries(demo)) {
           let text = `${key}: ${value}`;
           panel.append("h6").text(text);
@@ -27,24 +28,17 @@ function makeMetaData(selectedID){
 }
 
 
-
-
-// Establish the Promise
-// const dataPromise = d3.json(url);
- //----------------------Set up starting ID
-// let selectedID = 940;
+//Create a function to make plots and populate demo data when new ID is selected
 function init(){
-// Get JSON data and log to console
-//----------------------------- link IDS to dropdonw
-
   // // Use D3 to select the dropdown menu
     let dropdownMenu = d3.select("#selDataset");
   d3.json(url).then((data)=>{
     let PatientIDs = data.names;
-    // Loop though options and append to to dropdown
+    // Loop though each name/ID and append to to dropdown
     PatientIDs.forEach((ID)=>{
       dropdownMenu.append("option").attr("value", ID).text(ID);
     })
+    //Automatically start with fist ID in list
     let initialID = PatientIDs[0];
     makePlots(initialID);
     makeMetaData(initialID);
@@ -52,7 +46,7 @@ function init(){
   })
  
 }
-
+// When the selection changes, run the make metadata and make plots functions
 function optionChanged(selectedID) {
   makeMetaData(selectedID);
   makePlots(selectedID);
@@ -61,10 +55,10 @@ function optionChanged(selectedID) {
 
 
 
-//---------bar chart
+//function to make plots
 function makePlots(selectedID) {
   d3.json(url).then((data)=>{
-
+    //creating a space for the charts to go
     d3.select("#bar").append("div").attr("class", "panel");
     d3.select("#bubble").append("div").attr("class", "panel");
     d3.select("#bar").attr("class", "panel-body");
@@ -72,6 +66,7 @@ function makePlots(selectedID) {
     d3.select("#gauge").append("div").attr("class", "panel");
     d3.select("#gauge").attr("class", "panel-body");
 
+    //Lists to house data from for loop
     let sampleData = data.samples;
     let otuIds = [];
     let sampleValues = [];
@@ -80,19 +75,14 @@ function makePlots(selectedID) {
     for (let i = 0; i < sampleData.length; i++) {
 
       let selectedSample = sampleData[i];
+      //If ID selection is equal to ID in sample data
       if (selectedSample.id == selectedID ) {
+        //populate data for that ID into lists above
         bubbleOtu = selectedSample.otu_ids
         otuIds = selectedSample.otu_ids.map(id=>`otu ${id}`)
         sampleValues = selectedSample.sample_values
         otuLabels = selectedSample.otu_labels
-
-        // var xnum = sampleValues.slice(0,10).reverse();
-        // let y = otuIds.slice(0, 10).reverse();
-        //         console.log(xnum);
-        // console.log(sampleValues);
-        // console.log(otuIds)
-
-
+      //Bar Chart
       let trace1 = [{
           x: sampleValues.slice(0,10).reverse(),
           y: otuIds.slice(0,10).reverse(),
@@ -112,8 +102,7 @@ function makePlots(selectedID) {
             
       Plotly.newPlot("bar", trace1, layout1);
 
-
-
+        //bubble chart
         let trace2 = [{
           y: sampleValues,
           x: bubbleOtu,
@@ -138,7 +127,7 @@ function makePlots(selectedID) {
         console.log({sampleValues, name:"sampleValues"});   
 
 
-
+        //Gauge
         let trace3 =  [
           {
             domain: { x: [0, 1], y: [0, 1] },
